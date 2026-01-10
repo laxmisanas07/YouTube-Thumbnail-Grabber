@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Y-Grabber | HD Thumbnail Downloader</title>
+    <style>
+        /* --- CSS: Dark & Modern UI --- */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f0f0f;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #1f1f1f;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: center;
+            border: 1px solid #333;
+        }
+
+        h1 {
+            color: #ff0000; /* YouTube Red */
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        p { color: #aaa; margin-bottom: 25px; font-size: 14px; }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background-color: #121212;
+            color: white;
+            outline: none;
+            font-size: 16px;
+        }
+
+        input:focus { border-color: #ff0000; }
+
+        button {
+            padding: 12px 20px;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        button:hover { background-color: #cc0000; }
+
+        /* Preview Area */
+        #preview-area {
+            display: none; /* Pehle chhupa rahega */
+            margin-top: 20px;
+            animation: fadeIn 0.5s;
+        }
+
+        img {
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 2px solid #333;
+        }
+
+        .download-btn {
+            display: inline-block;
+            text-decoration: none;
+            background-color: #3ea6ff;
+            color: black;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .download-btn:hover { background-color: #65b8ff; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .error { color: #ff4d4d; margin-top: 10px; font-size: 14px; display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Y-GRABBER</h1>
+        <p>Paste any YouTube Link to get HD Thumbnail</p>
+
+        <div class="input-group">
+            <input type="text" id="urlInput" placeholder="Paste link here (e.g., https://youtu.be/...)">
+            <button onclick="getThumbnail()">GO</button>
+        </div>
+
+        <div id="errorMsg" class="error">Invalid YouTube URL! Please try again.</div>
+
+        <div id="preview-area">
+            <img id="thumbImg" src="" alt="Thumbnail Preview">
+            <br>
+            <a id="downloadLink" class="download-btn" href="#" target="_blank" download>Download Image</a>
+        </div>
+    </div>
+
+<script>
+    // --- JavaScript Logic ---
+
+    function getThumbnail() {
+        const input = document.getElementById('urlInput').value;
+        const previewArea = document.getElementById('preview-area');
+        const thumbImg = document.getElementById('thumbImg');
+        const downloadLink = document.getElementById('downloadLink');
+        const errorMsg = document.getElementById('errorMsg');
+
+        // 1. YouTube Video ID extract karne ka magic (Regex)
+        // Yeh code kisi bhi tarah ka link handle karega (Shorts, Normal, Embed)
+        const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+        
+        const match = input.match(regex);
+
+        if (match && match[1]) {
+            // Agar ID mil gayi
+            const videoId = match[1];
+            errorMsg.style.display = 'none';
+
+            // 2. High Resolution Image URL banana
+            const imageUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+
+            // 3. UI Update karna
+            thumbImg.src = imageUrl;
+            downloadLink.href = imageUrl;
+            
+            previewArea.style.display = 'block';
+        } else {
+            // Agar link galat hai
+            previewArea.style.display = 'none';
+            errorMsg.style.display = 'block';
+        }
+    }
+</script>
+
+</body>
+</html>
